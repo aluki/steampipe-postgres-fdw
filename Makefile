@@ -11,11 +11,17 @@ build: prebuild.go
 	
 	rm -f prebuild.go
 
-install: build
-	if test -d $(DESTDIR); then \
-		cp ./build-$(PLATFORM)/steampipe_postgres_fdw--1.0.sql $(DESTDIR)/postgres/share/postgresql/extension/; \
-		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.control $(DESTDIR)/postgres/share/postgresql/extension/; \
-		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.so $(DESTDIR)/postgres/lib/postgresql/; \
+install:
+	if test "$(DESTDIR)" = "~/.steampipe/db/14.2.0" ; then \
+		cp ./build-$(PLATFORM)/steampipe_postgres_fdw--1.0.sql $(DESTDIR)/postgres/share/postgresql/extension/ ; \
+		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.control $(DESTDIR)/postgres/share/postgresql/extension/ ; \
+		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.so $(DESTDIR)/postgres/lib/postgresql/ ; \
+	else \
+		mkdir -p $(DESTDIR)/$(shell pg_config --pkglibdir) ; \
+		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.so $(DESTDIR)/$(shell pg_config --pkglibdir)/ ; \
+		mkdir -p $(DESTDIR)/$(shell pg_config --sharedir)/extension ; \
+		cp ./build-$(PLATFORM)/steampipe_postgres_fdw--1.0.sql $(DESTDIR)/$(shell pg_config --sharedir)/extension/ ; \
+		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.control $(DESTDIR)/$(shell pg_config --sharedir)/extension/ ; \
 	fi
 
 # make target to generate a go file containing the C includes containing bindings to the
