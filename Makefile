@@ -1,6 +1,7 @@
 # Makefile
 
 PLATFORM=$(shell uname)
+DESTDIR=~/.steampipe/db/14.2.0
 
 build: prebuild.go
 	$(MAKE) -C ./fdw clean
@@ -11,10 +12,10 @@ build: prebuild.go
 	rm -f prebuild.go
 
 install: build
-	if test -d ~/.steampipe/db/14.2.0; then \
-		cp ./build-$(PLATFORM)/steampipe_postgres_fdw--1.0.sql ~/.steampipe/db/14.2.0/postgres/share/postgresql/extension/; \
-		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.control ~/.steampipe/db/14.2.0/postgres/share/postgresql/extension/; \
-		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.so ~/.steampipe/db/14.2.0/postgres/lib/postgresql/; \
+	if test -d $(DESTDIR); then \
+		cp ./build-$(PLATFORM)/steampipe_postgres_fdw--1.0.sql $(DESTDIR)/postgres/share/postgresql/extension/; \
+		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.control $(DESTDIR)/postgres/share/postgresql/extension/; \
+		cp ./build-$(PLATFORM)/steampipe_postgres_fdw.so $(DESTDIR)/postgres/lib/postgresql/; \
 	fi
 
 # make target to generate a go file containing the C includes containing bindings to the
